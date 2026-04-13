@@ -28,16 +28,16 @@ class SecureServer:
 
             try:
                 conn = self.context.wrap_socket(conn_socket, server_side=True)
-                print("[+] [Warstwa Zabezpieczeń] Zestawiono szyfrowane połączenie TLS.", flush=True)
+                print("Zestawiono szyfrowane połączenie TLS.", flush=True)
 
                 data = conn.recv(1024)
 
                 if data:
-                    print(f"[*] Odszyfrowana wiadomość od klienta: {data.decode()}", flush=True)
-                    conn.sendall(b"Witaj Kliencie! Tu bezpieczny serwer (wer. 3.0).")
+                    print(f"Odszyfrowana wiadomość od klienta: {data.decode()}", flush=True)
+                    conn.sendall(b"Witaj Kliencie! Tu bezpieczny serwer")
             
             except ssl.SSLError as e:
-                print(f"[!] Błąd TLS (prawdopodobnie klient odrzucił certyfikat): {e}", flush=True)
+                print(f"Błąd TLS (prawdopodobnie klient odrzucił certyfikat): {e}", flush=True)
 
                 if conn:
                     conn.close()
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     try:
         server.start()
     except KeyboardInterrupt:
-        print("\n[*] Serwer został zatrzymany ręcznie.")
+        print("\n Serwer został zatrzymany ręcznie.")
