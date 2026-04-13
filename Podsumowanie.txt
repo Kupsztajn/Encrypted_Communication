@@ -1,0 +1,50 @@
+Na ocenę 3.0
+
+Generujemy :
+
+- certyfikat server-cert.pem - dowód tożsamości, który zawiera w sobie otwartą kłódkę, czyli klucz publiczny.
+- server-key.pem - klucz prywatny
+
+
+Przy wysłaniu do klienta klient:
+
+- Serwer wysyła klientowi swój server-cert.pem.
+- Klient odbiera certyfikat i wymyśla swoje tajne hasło tak zwane KLUCZ SESJI
+- Przy użyciu klucza publicznego z certyfikatu klient szyfruje swoje TAJNE_HASŁO
+- Zaszyfrowane TAJNE_HASŁO jest wysyłane do serwera
+
+
+Serwer jako iż posiada pasujący do certa klucz prywatny :
+
+- odszyfrowuje TAJNE_HASŁO
+- od teraz cała komunikacja jest szyfrowana tym wspólnie ustalonym hasłem
+
+
+Na ocenę 3.5:
+
+Generujemy:
+
+- ca-key.pem - klucz prywatny CA - Certification Authority 
+- ca-cert.pem - klucz publiczny CA
+
+- servery-key.pem - klucz prywatny serwera
+- server.cert.pem - certyfikat serwera działający jako klucz publiczny
+
+Dodatkowo wykonujemy komendę:
+
+openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -days 365
+
+Która podpisuje certyfikat serwera kluczem prywatnym CA
+
+
+Różnica między poprzednim podpunktem polega na tym , że teraz nasz klient ufa:
+
+- self.context.load_verify_locations(cafile="ca-cert.pem")
+
+A nie jak przedtem:
+
+- self.context.load_verify_locations(cafile="server-cert.pem")
+
+
+Polega ona tym, że teraz nie wierzy ślepo jednego serwerowi tylko centrum certyfikacji. Jak otrzyma certa od serwera wykona obliczeniami kryptograficznymi
+weryfikacje czy został on podbity przez CA.
