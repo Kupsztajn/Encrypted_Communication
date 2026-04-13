@@ -8,16 +8,13 @@ class CAClient:
         self.host = host
         self.port = port
         
-        # Klient chce uwierzytelnić serwer
         self.context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
         
-        # KLUCZOWA ZMIANA: Klient ufa CA, a nie konkretnemu serwerowi
         self.context.load_verify_locations(cafile="ca-cert.pem")
     
 
     def connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Wrapowanie gniazda - tu następuje weryfikacja podpisu CA
         conn = self.context.wrap_socket(sock, server_hostname="localhost")
         
         try:
